@@ -14,8 +14,8 @@ uploaded_files = st.file_uploader("Choose a file", type=["csv", "xlsx"],
 accept_multiple_files=True)
 
 if uploaded_files:
-    for file in uploaded_files:                       )
-    file_ext = os.path.splitext(file.name)[-1].lower()
+    for file in uploaded_files:                       
+        file_ext = os.path.splitext(file.name)[-1].lower()
 
 
     if file_ext == ".csv":
@@ -23,7 +23,7 @@ if uploaded_files:
     elif file_ext == ".xlsx":
         df = pd.read_excel(file)
     else:
-        st.error("Unsupported file type: {file_ext}")
+        st.error(f"Unsupported file type: {file_ext}")
         continue
 
     #Display infor about the life
@@ -52,7 +52,7 @@ if uploaded_files:
 
         # choose specific colz to keep or convert
         st.subheader("Choose specific columns to keep or convert")
-        columns = st.multiselect(f"choose columns for {file.name}", df.columns, default=df.columns)4
+        columns = st.multiselect(f"choose columns for {file.name}", df.columns, default=df.columns)
         df = df[columns]
 
 
@@ -72,5 +72,17 @@ if uploaded_files:
                 min_type = "text/csv"         
 
             elif converstion_type == "Excel":
-                pass
-                
+                df.to_excel(buffer, index=False)
+                file_name = file.name.replace(file_ext, ".xlsx")
+                mine_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            buffer.seek(0)
+
+            #Download Button
+            st.download_button(
+                label=f"Download {file_name} as {converstion_type}",
+                data=buffer,
+                file_name=file_name,
+                mime=mine_type
+            )
+
+    st.success(f"Successfully processed all files")
