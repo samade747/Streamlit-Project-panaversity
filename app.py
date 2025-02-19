@@ -49,3 +49,35 @@ if uploaded_files:
                numeric_cols = df.select_dtypes(include=["numbers"]).columns
                df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
                st.write("Missing values filled")
+
+        # choose specific colz to keep or convert
+        st.subheader("Choose specific columns to keep or convert")
+        columns = st.multiselect(f"choose columns for {file.name}", df.columns, default=df.columns)4
+        df = df[columns]
+
+
+        #Create some visualizations
+        st.subheader("Data Visualizations")
+        if st.checkbox(f"show visualizations for {file.name}"):
+            st.bar_chart(df.select_dtypes(include="numbers").iloc[:,:2])
+
+        #convert the file -> csv to excel
+        st.subheader("Conversion Options")
+        converstion_type = st.radio(f"choose conversion type for {file.name}", ["CSV", "Excel"], key=file.name)
+        if st.button(f"Convert {file.name} "):
+            buffer = BytesIO()
+            if converstion_type == "CSV":
+                df.to_csv(buffer, index=False)
+                st.download_button(
+                    label=f"Download {file.name} as CSV",
+                    data=buffer,
+                    file_name=f"{file.name}.csv",
+                    mime="text/csv"
+                ) 
+
+
+
+
+            elif converstion_type == "Excel":
+                pass
+                
