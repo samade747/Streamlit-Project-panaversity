@@ -68,15 +68,8 @@ if uploaded_files:
             buffer = BytesIO()
             if converstion_type == "CSV":
                 df.to_csv(buffer, index=False)
-                st.download_button(
-                    label=f"Download {file.name} as CSV",
-                    data=buffer,
-                    file_name=f"{file.name}.csv",
-                    mime="text/csv"
-                ) 
-
-
-
+                file_name = file.name.replace(file_ext, ".csv") 
+                min_type = "text/csv"         
 
             elif converstion_type == "Excel":
                 pass
